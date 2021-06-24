@@ -1,15 +1,12 @@
 class PostsController < ApplicationController
 
     def show_by_category
-        @posts=Post.where(category_id: Category.find_by(name: params[:category_name]).id).where(item_id: params[:item_id])
-                .where(user_id: params[:user_id])
         if params[:category_name]=="movies"
             @item=Movie.find_by(id: params[:item_id])
         else
             @item=Book.find_by(id: params[:item_id])
         end
-        
-        render json: {Title:@item, posts: @posts.as_json(only: [:id,:review,:user_id])}
+        render json: {Item:@item,posts: @item.posts}
     end
 
     def show
@@ -31,15 +28,13 @@ class PostsController < ApplicationController
 
     def create
         @post = Post.new(post_params)
-        @post.user = @current_user
-        @post.category = Category.find_by(name: params[:category_name])
-        @post.item_id =  params[:item_id]
+        @post.user_id = @current_user.id
         if params[:category_name]=="movies"
-            @item=Movie.find_by(id: params[:item_id])
+            @post.commantable=Movie.find_by(id: params[:item_id])
         else
-            @item=Book.find_by(id: params[:item_id])
+            @post.commantable=Book.find_by(id: params[:item_id])
         end
-        if @post.save && @item && @post.category
+        if @post.save  && @post.commantable_id
             render json: @post, status: :created, location:@post
         else
             render json:{errors: @post.errors,message:"Check the api request properly"}, status: :unprocessable_entity

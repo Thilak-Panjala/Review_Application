@@ -7,7 +7,8 @@ class BooksController < ApplicationController
 
 
     def index
-        @books = Book.all
+        @books = Book.where(nil)
+        @books=Book.filter_by_books(params[:contains]) if params[:contains].present?
         render json: {books: @books}
     end
 
@@ -57,6 +58,7 @@ class BooksController < ApplicationController
     def set_book
         @book = Book.find(params[:id])
     end
+    
 
     def book_params
         params.require(:book).permit(:title,:author,:rating)

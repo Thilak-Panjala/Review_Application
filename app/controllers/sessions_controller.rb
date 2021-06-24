@@ -13,13 +13,4 @@ class SessionsController < ApplicationController
             render json:{ status: "Login Failed"}
         end
     end
- 
-    def destroy
-        if session[:user_id]!=nil
-            session[:user_id]=nil
-            render json: "Logged out"
-        else
-            render json: "No user is Logged in"
-        end
-    end
 end

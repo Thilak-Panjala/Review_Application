@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  resources :movies,:books,:users,:posts,:categories,:comments
+  jsonapi_resources :movies
+  resources :books,:users,:posts,:categories,:comments
   post '/:category_name/:item_id/posts', to: 'posts#create'
   get '/:category_name/:item_id/users/:user_id/posts', to: 'posts#show_by_category'
   get '/posts/:post_id/comments', to:'comments#show_by_posts'

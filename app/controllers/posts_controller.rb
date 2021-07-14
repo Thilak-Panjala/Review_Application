@@ -1,12 +1,13 @@
 class PostsController < ApplicationController
 
+    before_action :set_category, only: [:show_by_category,:create]
+    before_action :isreviewable, only: [:create,:update]
     def show_by_category
-        if params[:category_name]=="movies"
-            @item=Movie.find_by(id: params[:item_id])
+        if @item
+            render json: {Item:@item,posts: @item.posts}
         else
-            @item=Book.find_by(id: params[:item_id])
+            render json: "No Posts are available"
         end
-        render json: {Item:@item,posts: @item.posts}
     end
 
     def show
@@ -29,11 +30,7 @@ class PostsController < ApplicationController
     def create
         @post = Post.new(post_params)
         @post.user_id = @current_user.id
-        if params[:category_name]=="movies"
-            @post.commantable=Movie.find_by(id: params[:item_id])
-        else
-            @post.commantable=Book.find_by(id: params[:item_id])
-        end
+        @post.commantable=@item
         if @post.save  && @post.commantable_id
             render json: @post, status: :created, location:@post
         else
@@ -60,8 +57,27 @@ class PostsController < ApplicationController
     end
 
     private
-
+    def set_category
+        if params[:category_name]=="movies"
+            @item=Movie.find_by(id: params[:item_id])
+        elsif params[:category_name]=="books"
+            @item=Book.find_by(id: params[:item_id])
+        else
+            @item=Song.find_by(id: params[:item_id])
+        end
+    end
     def post_params
         params.require(:post).permit(:review)
+    end
+
+    def isreviewable
+        @item=Category.find_by(name: params[:category_name])
+        if @item
+            if @item.reviewable==false
+                render json: "It is not reviewable"
+            end
+        else
+            render json: "Category not found"
+        end
     end
 end

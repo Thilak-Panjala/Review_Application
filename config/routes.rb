@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   post '/posts/:post_id/comments', to:'comments#create'
   post '/:category_name/:item_id/posts/:post_id/comments', to:'comments#create'
   delete '/posts/:post_id/comments/:id', to:'comments#destroy'
-  get '/:category_name/:item_id/users/:user_id/posts/:post_id/comments', to: 'comments#show_by_category'
+  get '/:category_name/:item_id/users/:user_id/posts/:post_id/comments', to: 'comments#show_by_posts'
   get 'login', to: 'sessions#new'
   post 'login', to: 'sessions#create'
   post 'signup', to: 'users#create'

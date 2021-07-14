@@ -3,6 +3,13 @@ class PostsController < ApplicationController
     before_action :set_category, only: [:show_by_category,:create]
     before_action :isreviewable, only: [:create,:update]
     def show_by_category
+        if params[:category_name]=="movies"
+            @item=Movie.find_by(id: params[:item_id])
+        elsif params[:category_name]=="books"
+            @item=Book.find_by(id: params[:item_id])
+        else
+            @item=Song.find_by(id: params[:item_id])
+        end
         if @item
             render json: {Item:@item,posts: @item.posts}
         else

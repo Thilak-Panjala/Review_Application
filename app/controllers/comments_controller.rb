@@ -4,7 +4,7 @@ class CommentsController < ApplicationController
 
     def show_by_posts
         @comments=Comment.where(post_id: params[:post_id])
-        render json: @commentsBooks
+        render json: @comments
     end
     
     def show

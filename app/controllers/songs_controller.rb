@@ -33,7 +33,7 @@ class SongsController < ApplicationController
 
     def update
         if @current_user.admin?
-            if@song.update(song_params)
+            if @song.update(song_params)
                 render json:@song
             else
                 render json:@song.errors, status: :unprocessable_entity

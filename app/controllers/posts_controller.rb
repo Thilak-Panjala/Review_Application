@@ -30,6 +30,13 @@ class PostsController < ApplicationController
     def create
         @post = Post.new(post_params)
         @post.user_id = @current_user.id
+        if params[:category_name]=="movies"
+            @item=Movie.find_by(id: params[:item_id])
+        elsif params[:category_name]=="books"
+            @item=Book.find_by(id: params[:item_id])
+        else
+            @item=Song.find_by(id: params[:item_id])
+        end
         @post.commantable=@item
         if @post.save  && @post.commantable_id
             render json: @post, status: :created, location:@post

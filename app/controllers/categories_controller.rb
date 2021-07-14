@@ -20,6 +20,7 @@ class CategoriesController < ApplicationController
     def edit
     end
 
+
     def create
         if @current_user.admin?
             @category = Category.new(category_params)

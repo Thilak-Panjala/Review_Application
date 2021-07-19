@@ -3,15 +3,8 @@ class PostsController < ApplicationController
     before_action :set_category, only: [:show_by_category,:create]
     before_action :isreviewable, only: [:create,:update]
     def show_by_category
-        if params[:category_name]=="movies"
-            @item=Movie.find_by(id: params[:item_id])
-        elsif params[:category_name]=="books"
-            @item=Book.find_by(id: params[:item_id])
-        else
-            @item=Song.find_by(id: params[:item_id])
-        end
-        if @item
-            render json: {Item:@item,posts: @item.posts}
+        if @commentableitem
+            render json: {Item:@commentableitem,posts: @commentableitem.posts}
         else
             render json: "No Posts are available"
         end
@@ -37,14 +30,7 @@ class PostsController < ApplicationController
     def create
         @post = Post.new(post_params)
         @post.user_id = @current_user.id
-        if params[:category_name]=="movies"
-            @item=Movie.find_by(id: params[:item_id])
-        elsif params[:category_name]=="books"
-            @item=Book.find_by(id: params[:item_id])
-        else
-            @item=Song.find_by(id: params[:item_id])
-        end
-        @post.commantable=@item
+        @post.commantable=@commentableitem
         if @post.save  && @post.commantable_id
             render json: @post, status: :created, location:@post
         else
@@ -73,11 +59,11 @@ class PostsController < ApplicationController
     private
     def set_category
         if params[:category_name]=="movies"
-            @item=Movie.find_by(id: params[:item_id])
+            @commentableitem=Movie.find_by(id: params[:item_id])
         elsif params[:category_name]=="books"
-            @item=Book.find_by(id: params[:item_id])
+            @commentableitem=Book.find_by(id: params[:item_id])
         else
-            @item=Song.find_by(id: params[:item_id])
+            @commentableitem=Song.find_by(id: params[:item_id])
         end
     end
     def post_params
